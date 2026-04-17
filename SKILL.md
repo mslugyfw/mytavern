@@ -1,21 +1,24 @@
 ---
-name: mytavern1
+name: mytavern
 description: MyTavern — 通用角色扮演酒馆系统，支持世界书context注入和场景生图。进入酒馆激活世界书context，支持按时代选择加载，ChatGLM生图增强沉浸感，退出后恢复普通对话。触发词：进入酒馆、酒馆、mytavern、tavern、史记扮演、角色扮演。
 ---
 
-# MyTavern — 角色扮演酒馆
+# MyTavern — 通用角色扮演酒馆
 
-基于世界书的交互式历史角色扮演系统。
+基于世界书的交互式角色扮演系统。
 
 ## 命令
 
-进入酒馆 → 选时代 → 扮演/提问 → /draw生图 → 退出酒馆
+进入酒馆 → 选时代 → 选角色/自定义 → 扮演/提问 → /draw生图 → 退出酒馆
 
 ## 进入流程
 
 1. 读取 `references/eras.md` 展示时代菜单
-2. 用户选择 → 运行 `scripts/load_era.py <era_id>` → 读取 `/tmp/mytavern1/current_context.md`
-3. 开始角色扮演
+2. 用户选择时代 → 加载世界书
+3. 展示可用角色（`char_manager.py list`）
+4. 用户选角色或自定义身份
+5. 运行 `lorebook_engine.py context <角色名> <世界书ID>` 生成context
+6. 开始角色扮演
 
 ## 回答模式（优先级从高到低）
 
@@ -34,6 +37,52 @@ description: MyTavern — 通用角色扮演酒馆系统，支持世界书contex
 5. **氛围感**：环境、气味、声音、光线
 6. **纯文本**：不用卡片样式
 
+## 世界书引擎 v3
+
+核心算法参考 SillyTavern world-info.js：
+
+| 功能 | 说明 |
+|------|------|
+| **关键词匹配** | primary + secondary keys |
+| **向量检索** | 字符n-gram + numpy余弦相似度（无需分词） |
+| **混合检索** | 关键词60% + 向量40% 加权 |
+| **exclude_keys** | 排除匹配（避免误激活） |
+| **position策略** | before_char / after_char / top_author |
+| **budget** | 25% context预算 |
+| **recursive** | 多轮链式激活（最多3轮） |
+| **min_activations** | 最低激活数（不够则扩大扫描深度） |
+| **constant** | 无条件注入 |
+| **group_scoring** | 同组共享分数 |
+| **角色卡绑定** | 角色卡自动加载专属世界书 |
+
+## 角色卡系统
+
+### 格式（兼容ST V2简化版）
+
+```json
+{
+  "name": "角色名",
+  "description": "一句话描述",
+  "personality": "性格特征",
+  "scenario": "场景设定",
+  "first_mes": "开场白",
+  "system_prompt": "系统提示词",
+  "lorebook": ["绑定的世界书ID"],
+  "tags": ["标签"]
+}
+```
+
+### 命令
+
+- `char_manager.py list` — 列出角色
+- `char_manager.py auto <世界书ID>` — 自动生成角色卡
+- `char_manager.py show <名字>` — 查看角色卡
+- `char_manager.py create <名字>` — 创建角色卡
+
+### 存储路径
+
+`assets/characters/<角色名>.json`
+
 ## 场景生图（/draw）
 
 ChatGLM浏览器自动化。详见 `references/chatglm-guide.md`。
@@ -47,9 +96,19 @@ ChatGLM浏览器自动化。详见 `references/chatglm-guide.md`。
 ```
 mytavern1/
 ├── SKILL.md
-├── scripts/{list_eras.py, load_era.py, convert_era.py}
-├── references/{eras.md, chatglm-guide.md}
-└── assets/lorebooks/{wudai~xihan}.json
+├── scripts/
+│   ├── lorebook_engine.py      # v3世界书引擎（关键词+向量混合检索）
+│   ├── build_vector_index.py   # 预计算向量索引（sqlite3）
+│   ├── char_manager.py         # 角色卡管理
+│   ├── convert_era.py          # shiji-kb → 世界书JSON转换器
+│   └── list_eras.py            # 列出可用时代
+├── references/
+│   ├── eras.md                 # 时代选择菜单
+│   └── chatglm-guide.md        # ChatGLM生图指南
+└── assets/
+    ├── lorebooks/              # 世界书JSON
+    ├── characters/             # 角色卡JSON
+    └── indices/                # 向量索引（sqlite3）
 ```
 
 数据源: shiji-kb (CC BY-NC-SA 4.0)

@@ -15,7 +15,9 @@ ST核心算法:
 import json, sys, re
 from pathlib import Path
 
-ASSETS_DIR = Path(__file__).parent.parent / "assets" / "lorebooks"
+SCRIPT_DIR = Path(__file__).resolve().parent
+SKILL_DIR = SCRIPT_DIR.parent
+ASSETS_DIR = SKILL_DIR / "assets" / "lorebooks"
 OUTPUT_DIR = Path("/tmp/mytavern1")
 
 # ST默认值
