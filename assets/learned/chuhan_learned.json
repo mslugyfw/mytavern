@@ -1,0 +1,20 @@
+{
+  "suggestions": [
+    {
+      "topic": "江充巫蛊案",
+      "content": "江充，直指绣衣使者。与太子刘据有旧怨（太子随从在驰道迎驾，江充没收车马）。征和二年奉命追查巫蛊，刻意搜太子宫，声称发现桐木人偶。导致太子被迫起兵，杀江充，最终兵败自缢。",
+      "source": "conversation",
+      "created": "2026-04-18 05:58",
+      "status": "applied",
+      "keys": [
+        "江充巫蛊案"
+      ],
+      "group": "自定义",
+      "secondary_keys": [],
+      "exclude_keys": [],
+      "constant": false,
+      "scan_depth": 10
+    }
+  ],
+  "applied": []
+}

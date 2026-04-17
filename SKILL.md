@@ -91,6 +91,40 @@ ChatGLM浏览器自动化。详见 `references/chatglm-guide.md`。
 
 清理 `/tmp/mytavern1/`，恢复普通对话。
 
+## 动态世界书（OpenClaw独有）
+
+SillyTavern做不到的功能，利用OpenClaw内置能力实现：
+
+### 实时搜索补充（P3-1）
+当世界书中找不到相关信息时，自动调用 `web_search`/`tavily_search` 补充。
+
+```
+1. 用户提到世界书中没有的内容
+2. 调用 dynamic_worldbook.py check 判断是否需要搜索
+3. 如果 search_needed=true → 用 tavily_search 搜索
+4. 将搜索结果整合进回复，标注【补】
+```
+
+### 世界书自学习（P3-2）
+对话中学到的新知识，建议写入世界书。
+
+```
+1. 对话中出现有价值的新知识（史实、人物关系等）
+2. 调用 dynamic_worldbook.py learn 记录建议
+3. 退出酒馆前，列出建议让用户确认
+4. 用户确认后 apply 写入世界书 + 重建向量索引
+```
+
+### LCM跨会话记忆（P3-3）
+利用OpenClaw的LCM系统检索历史对话。
+
+```
+1. 用户提到之前对话中的内容
+2. 调用 lcm_grep 搜索历史
+3. 调用 lcm_expand_query 深度检索
+4. 整合历史信息，保持连续性
+```
+
 ## 文件结构
 
 ```
@@ -100,6 +134,7 @@ mytavern1/
 │   ├── lorebook_engine.py      # v3世界书引擎（关键词+向量混合检索）
 │   ├── build_vector_index.py   # 预计算向量索引（sqlite3）
 │   ├── char_manager.py         # 角色卡管理
+│   ├── dynamic_worldbook.py    # 动态世界书（搜索补充+自学习）
 │   ├── convert_era.py          # shiji-kb → 世界书JSON转换器
 │   └── list_eras.py            # 列出可用时代
 ├── references/
@@ -108,7 +143,8 @@ mytavern1/
 └── assets/
     ├── lorebooks/              # 世界书JSON
     ├── characters/             # 角色卡JSON
-    └── indices/                # 向量索引（sqlite3）
+    ├── indices/                # 向量索引（sqlite3）
+    └── learned/                # 自学习知识（待确认）
 ```
 
 数据源: shiji-kb (CC BY-NC-SA 4.0)

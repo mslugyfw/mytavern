@@ -17042,6 +17042,26 @@
         "chapter_count": 0,
         "war_id": "WAR-110-009"
       }
+    },
+    "676": {
+      "name": "江充巫蛊案",
+      "content": "江充，直指绣衣使者。与太子刘据有旧怨（太子随从在驰道迎驾，江充没收车马）。征和二年奉命追查巫蛊，刻意搜太子宫，声称发现桐木人偶。导致太子被迫起兵，杀江充，最终兵败自缢。",
+      "comment": "自定义 - conversation",
+      "keys": [
+        "江充巫蛊案"
+      ],
+      "secondary_keys": [],
+      "exclude_keys": [],
+      "constant": false,
+      "selective": false,
+      "insertion_order": 200,
+      "enabled": true,
+      "group": "自定义",
+      "extensions": {
+        "ref_count": 0,
+        "source": "conversation",
+        "learned_at": "2026-04-18 05:58"
+      }
     }
   }
 }
