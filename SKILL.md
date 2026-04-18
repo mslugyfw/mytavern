@@ -88,6 +88,8 @@ description: MyTavern — 通用角色扮演酒馆系统，支持世界书contex
 
 ChatGLM浏览器自动化。详见 `references/chatglm-guide.md`。
 
+**自定义绘图指令**：你可以在对话中告诉我你喜欢的画风，比如"生成图片时用水墨画风格"或"用赛博朋克风格"，我会按你的偏好调整ChatGLM的绘图提示词。也可以指定构图、色调、视角等细节。
+
 ## 退出酒馆
 
 清理 `/tmp/mytavern1/`，恢复普通对话。
